@@ -6,7 +6,8 @@ var LeafletLayerView = require('./leaflet-layer-view');
 var LeafletCartoDBWebglLayerGroupView = function (layerGroupModel, leafletMap) {
   LeafletLayerView.apply(this, arguments);
   var self = this;
-
+  self.trigger('loading');
+  
   this.tangram = new TC(leafletMap, function () {
     layerGroupModel.bind('change:urls',
       self._onURLsChanged(layerGroupModel)
@@ -14,6 +15,8 @@ var LeafletCartoDBWebglLayerGroupView = function (layerGroupModel, leafletMap) {
 
     layerGroupModel.forEachGroupedLayer(self._onLayerAdded, self);
     layerGroupModel.onLayerAdded(self._onLayerAdded.bind(self));
+    
+    self.trigger('load');
   });
 
 };
