@@ -1,3 +1,4 @@
+/* global _ */
 /**
  * tabbed pane.
  * if contains n views inside it and shows only one at once

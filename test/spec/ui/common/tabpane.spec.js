@@ -1,3 +1,4 @@
+/* global _ */
 describe('core.ui.common.TabPane', function () {
   var pane;
   beforeEach(function () {

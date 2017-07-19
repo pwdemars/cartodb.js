@@ -1,3 +1,4 @@
+/* eslint-env browser */
 var $ = require('jquery');
 
 /**
