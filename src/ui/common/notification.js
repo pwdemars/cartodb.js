@@ -29,13 +29,13 @@ var Notification = View.extend({
   },
 
   default_options: {
-      timeout: 0,
-      msg: '',
-      hideMethod: '',
-      duration: 'normal'
+    timeout: 0,
+    msg: '',
+    hideMethod: '',
+    duration: 'normal'
   },
 
-  initialize: function() {
+  initialize: function () {
     this.closeTimeout = -1;
     _.defaults(this.options, this.default_options);
     this.template = this.options.template ? _.template(this.options.template) : templates.getTemplate('common/notification');
@@ -43,22 +43,23 @@ var Notification = View.extend({
     this.$el.hide();
   },
 
-  render: function() {
+  render: function () {
     var $el = this.$el;
     $el.html(this.template(this.options));
-    if(this.render_content) {
+    if (this.render_content) {
       this.$('.content').append(this.render_content());
     }
     return this;
   },
 
-  hide: function(ev) {
+  hide: function (ev) {
     var self = this;
-    if (ev)
+    if (ev) {
       ev.preventDefault();
+    }
     clearTimeout(this.closeTimeout);
-    if(this.options.hideMethod != '' && this.$el.is(":visible") ) {
-      this.$el[this.options.hideMethod](this.options.duration, 'swing', function() {
+    if (this.options.hideMethod !== '' && this.$el.is(':visible')) {
+      this.$el[this.options.hideMethod](this.options.duration, 'swing', function () {
         self.$el.html('');
         self.trigger('notificationDeleted');
         self.remove();
@@ -69,14 +70,13 @@ var Notification = View.extend({
       self.trigger('notificationDeleted');
       self.remove();
     }
-
   },
 
-  open: function(method, options) {
+  open: function (method, options) {
     this.render();
     this.$el.show(method, options);
-    if(this.options.timeout) {
-        this.closeTimeout = setTimeout(_.bind(this.hide, this), this.options.timeout);
+    if (this.options.timeout) {
+      this.closeTimeout = setTimeout(_.bind(this.hide, this), this.options.timeout);
     }
   }
 

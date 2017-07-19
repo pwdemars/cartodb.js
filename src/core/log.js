@@ -5,16 +5,16 @@ var config = require('../cdb.config');
 
 // TODO: Is this fake console/IE7 still necessary?
 var _console;
-var FakeConsole = function() {};
-FakeConsole.prototype.error = function(){};
-FakeConsole.prototype.log = function(){};
+var FakeConsole = function () { };
+FakeConsole.prototype.error = function () { };
+FakeConsole.prototype.log = function () { };
 
-//IE7 love
-if (typeof console !== "undefined") {
+// IE7 love
+if (typeof console !== 'undefined') {
   _console = console;
   try {
-    _console.log.apply(_console, ['cartodb.js ' + cdb.VERSION])
-  } catch(e) {
+    _console.log.apply(_console, ['cartodb.js ' + cdb.VERSION]); // eslint-disable-line
+  } catch (e) {
     _console = new FakeConsole();
   }
 } else {
@@ -23,24 +23,24 @@ if (typeof console !== "undefined") {
 
 var Log = Backbone.Model.extend({
 
-  error: function() {
+  error: function () {
     _console.error.apply(_console, arguments);
-    if(config.ERROR_TRACK_ENABLED) {
+    if (config.ERROR_TRACK_ENABLED) {
       errors.create({
         msg: Array.prototype.slice.call(arguments).join('')
       });
     }
   },
 
-  log: function() {
+  log: function () {
     _console.log.apply(_console, arguments);
   },
 
-  info: function() {
+  info: function () {
     _console.log.apply(_console, arguments);
   },
 
-  debug: function() {
+  debug: function () {
     if (cdb.DEBUG) _console.log.apply(_console, arguments);
   }
 });

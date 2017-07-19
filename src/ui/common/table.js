@@ -28,14 +28,14 @@ var Table = View.extend({
   rowView: RowView,
 
   events: {
-      'click td': '_cellClick',
-      'dblclick td': '_cellDblClick'
+    'click td': '_cellClick',
+    'dblclick td': '_cellDblClick'
   },
 
   default_options: {
   },
 
-  initialize: function() {
+  initialize: function () {
     var self = this;
     _.defaults(this.options, this.default_options);
     this.dataModel = this.options.dataModel;
@@ -58,28 +58,27 @@ var Table = View.extend({
     // collection, so its destroy doesn't bubble throught there.
     // Also, the only non-custom way to acknowledge that a row has been correctly deleted from a server is with
     // a sync, that doesn't bubble through the table
-    this.model.bind('removing:row', function() {
-      self.rowsBeingDeleted = self.rowsBeingDeleted ? self.rowsBeingDeleted +1 : 1;
+    this.model.bind('removing:row', function () {
+      self.rowsBeingDeleted = self.rowsBeingDeleted ? self.rowsBeingDeleted + 1 : 1;
       self.rowDestroying();
     });
-    this.model.bind('remove:row', function() {
-      if(self.rowsBeingDeleted > 0) {
+    this.model.bind('remove:row', function () {
+      if (self.rowsBeingDeleted > 0) {
         self.rowsBeingDeleted--;
         self.rowDestroyed();
-        if(self.dataModel.length == 0) {
+        if (self.dataModel.length === 0) {
           self.emptyTable();
         }
       }
     });
-
   },
 
-  headerView: function(column) {
-      return column[0];
+  headerView: function (column) {
+    return column[0];
   },
 
-  setDataSource: function(dm) {
-    if(this.dataModel) {
+  setDataSource: function (dm) {
+    if (this.dataModel) {
       this.dataModel.unbind(null, null, this);
     }
     this.dataModel = dm;
@@ -88,17 +87,17 @@ var Table = View.extend({
     this.dataModel.bind('add', this.addRow, this);
   },
 
-  _renderHeader: function() {
+  _renderHeader: function () {
     var self = this;
-    var thead = $("<thead>");
-    var tr = $("<tr>");
-    if(this.options.row_header) {
-      tr.append($("<th>").append(self.headerView(['', 'header'])));
+    var thead = $('<thead>');
+    var tr = $('<tr>');
+    if (this.options.row_header) {
+      tr.append($('<th>').append(self.headerView(['', 'header'])));
     } else {
-      tr.append($("<th>").append(self.headerView(['', 'header'])));
+      tr.append($('<th>').append(self.headerView(['', 'header'])));
     }
-    _(this.model.get('schema')).each(function(col) {
-      tr.append($("<th>").append(self.headerView(col)));
+    _(this.model.get('schema')).each(function (col) {
+      tr.append($('<th>').append(self.headerView(col)));
     });
     thead.append(tr);
     return thead;
@@ -107,13 +106,13 @@ var Table = View.extend({
   /**
    * remove all rows
    */
-  clear_rows: function() {
+  clear_rows: function () {
     this.$('tfoot').remove();
     this.$('tr.noRows').remove();
 
     // unbind rows before cleaning them when all are gonna be removed
     var rowView = null;
-    while(rowView = this.rowViews.pop()) {
+    while (rowView = this.rowViews.pop()) { // eslint-disable-line
       // this is a hack to avoid all the elements are removed one by one
       rowView.unbind(null, null, this);
       // each element removes itself from rowViews
@@ -126,20 +125,20 @@ var Table = View.extend({
   /**
    * add rows
    */
-  addRow: function(row, collection, options) {
+  addRow: function (row, collection, options) {
     var self = this;
-    var tr = new self.rowView({
+    var tr = new self.rowView({ // eslint-disable-line
       model: row,
       order: this.model.columnNames(),
       row_header: this.options.row_header
     });
     tr.tableView = this;
 
-    tr.bind('clean', function() {
+    tr.bind('clean', function () {
       var idx = _.indexOf(self.rowViews, tr);
       self.rowViews.splice(idx, 1);
       // update index
-      for(var i = idx; i < self.rowViews.length; ++i) {
+      for (var i = idx; i < self.rowViews.length; ++i) {
         self.rowViews[i].$el.attr('data-y', i);
       }
     }, this);
@@ -150,13 +149,12 @@ var Table = View.extend({
     this.retrigger('saving', tr);
 
     tr.render();
-    if(options && options.index !== undefined && options.index != self.rowViews.length) {
-
+    if (options && options.index !== undefined && options.index !== self.rowViews.length) {
       tr.$el.insertBefore(self.rowViews[options.index].$el);
       self.rowViews.splice(options.index, 0, tr);
-      //tr.$el.attr('data-y', options.index);
+      // tr.$el.attr('data-y', options.index);
       // change others view data-y attribute
-      for(var i = options.index; i < self.rowViews.length; ++i) {
+      for (var i = options.index; i < self.rowViews.length; ++i) {
         self.rowViews[i].$el.attr('data-y', i);
       }
     } else {
@@ -174,68 +172,68 @@ var Table = View.extend({
   * @method rowChanged
   * @abstract
   */
-  rowChanged: function() {},
+  rowChanged: function () {},
 
   /**
   * Callback executed when a row is sync
   * @method rowSynched
   * @abstract
   */
-  rowSynched: function() {},
+  rowSynched: function () {},
 
   /**
   * Callback executed when a row fails to reach the server
   * @method rowFailed
   * @abstract
   */
-  rowFailed: function() {},
+  rowFailed: function () {},
 
   /**
   * Callback executed when a row send a POST to the server
   * @abstract
   */
-  rowSaving: function() {},
+  rowSaving: function () {},
 
   /**
   * Callback executed when a row is being destroyed
   * @method rowDestroyed
   * @abstract
   */
-  rowDestroying: function() {},
+  rowDestroying: function () {},
 
   /**
   * Callback executed when a row gets destroyed
   * @method rowDestroyed
   * @abstract
   */
-  rowDestroyed: function() {},
+  rowDestroyed: function () {},
 
   /**
   * Callback executed when a row gets destroyed and the table data is empty
   * @method emptyTable
   * @abstract
   */
-  emptyTable: function() {},
+  emptyTable: function () {},
 
   /**
   * Checks if the table is empty
   * @method isEmptyTable
   * @returns boolean
   */
-  isEmptyTable: function() {
-    return (this.dataModel.length === 0 && this.dataModel.fetched)
+  isEmptyTable: function () {
+    return (this.dataModel.length === 0 && this.dataModel.fetched);
   },
 
   /**
    * render only data rows
    */
-  _renderRows: function() {
+  _renderRows: function () {
     this.clear_rows();
-    if(! this.isEmptyTable()) {
-      if(this.dataModel.fetched) {
+    if (!this.isEmptyTable()) {
+      if (this.dataModel.fetched) {
         var self = this;
 
-        this.dataModel.each(function(row) {
+        this.dataModel.each(function (row) {
           self.addRow(row);
         });
       } else {
@@ -244,13 +242,12 @@ var Table = View.extend({
     } else {
       this._renderEmpty();
     }
-
   },
 
-  _renderLoading: function() {
+  _renderLoading: function () {
   },
 
-  _renderEmpty: function() {
+  _renderEmpty: function () {
   },
 
   /**
@@ -258,14 +255,14 @@ var Table = View.extend({
   * @method addEmptyTableInfo
   * @abstract
   */
-  addEmptyTableInfo: function() {
+  addEmptyTableInfo: function () {
     // #to be overwrite by descendant classes
   },
 
   /**
    * render table
    */
-  render: function() {
+  render: function () {
     var self = this;
 
     // render header
@@ -275,20 +272,19 @@ var Table = View.extend({
     self._renderRows();
 
     return this;
-
   },
 
   /**
    * return jquery cell element of cell x,y
    */
-  getCell: function(x, y) {
-    if(this.options.row_header) {
+  getCell: function (x, y) {
+    if (this.options.row_header) {
       ++y;
     }
     return this.rowViews[y].getCell(x);
   },
 
-  _cellClick: function(e, evtName) {
+  _cellClick: function (e, evtName) {
     evtName = evtName || 'cellClick';
     e.preventDefault();
     var cell = $(e.currentTarget || e.target);
@@ -297,10 +293,9 @@ var Table = View.extend({
     this.trigger(evtName, e, cell, x, y);
   },
 
-  _cellDblClick: function(e) {
+  _cellDblClick: function (e) {
     this._cellClick(e, 'cellDblClick');
   }
-
 
 });
 

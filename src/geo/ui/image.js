@@ -5,68 +5,62 @@ var Text = require('./text');
 
 module.exports = Text.extend({
 
-  className: "cartodb-overlay image-overlay",
+  className: 'cartodb-overlay image-overlay',
 
   events: {
-    "click": "stopPropagation"
+    'click': 'stopPropagation'
   },
 
-  default_options: { },
+  default_options: {},
 
-  stopPropagation: function(e) {
-
+  stopPropagation: function (e) {
     e.stopPropagation();
-
   },
 
-  initialize: function() {
-
+  initialize: function () {
     _.defaults(this.options, this.default_options);
 
     this.template = this.options.template;
 
     var self = this;
 
-    $(window).on("map_resized", function() {
+    $(window).on('map_resized', function () {
       self._place();
     });
 
-    $(window).on("resize", function() {
+    $(window).on('resize', function () {
       self._place();
     });
-
   },
 
-  _applyStyle: function() {
+  _applyStyle: function () {
+    var style = this.model.get('style');
 
-    var style      = this.model.get("style");
+    var boxColor = style['box-color'];
+    var boxOpacity = style['box-opacity'];
+    var boxWidth = style['box-width'];
 
-    var boxColor   = style["box-color"];
-    var boxOpacity = style["box-opacity"];
-    var boxWidth   = style["box-width"];
+    this.$el.find('.text').css(style);
+    this.$el.css('z-index', style['z-index']);
 
-    this.$el.find(".text").css(style);
-    this.$el.css("z-index", style["z-index"]);
-
-    var rgbaCol = 'rgba(' + parseInt(boxColor.slice(-6,-4),16)
-    + ',' + parseInt(boxColor.slice(-4,-2),16)
-    + ',' + parseInt(boxColor.slice(-2),16)
-    +', ' + boxOpacity + ' )';
+    var rgbaCol = 'rgba(' + parseInt(boxColor.slice(-6, -4), 16) +
+      ',' + parseInt(boxColor.slice(-4, -2), 16) +
+      ',' + parseInt(boxColor.slice(-2), 16) +
+      ', ' + boxOpacity + ' )';
 
     this.$el.css({
       backgroundColor: rgbaCol
     });
 
-    this.$el.find("img").css({ width: boxWidth });
-
+    this.$el.find('img').css({ width: boxWidth });
   },
 
-  render: function() {
+  render: function () {
     var content;
-    if (this.model.get("extra").has_default_image) {
-      content = _.template('<img src="<%- url %>" />')({ url: this.model.get("extra").public_default_image_url });
+    if (this.model.get('extra').has_default_image) {
+      content = _.template('<img src="<%- url %>" />')({ url: this.model.get('extra').public_default_image_url });
     } else {
-      content = sanitize.html(this.model.get("extra").rendered_text, this.model.get('sanitizeContent'));
+      content = sanitize.html(this.model.get('extra').rendered_text, this.model.get('sanitizeContent'));
     }
 
     var data = _.chain(this.model.attributes).clone().extend({ content: content }).value();
@@ -74,15 +68,13 @@ module.exports = Text.extend({
 
     var self = this;
 
-    setTimeout(function() {
+    setTimeout(function () {
       self._applyStyle();
       self._place();
       self.show();
     }, 900);
 
-
     return this;
-
   }
 
 });

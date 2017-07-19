@@ -90,7 +90,7 @@ var GMapsCartoDBLayerGroupView = function (layerModel, gmapsMap) {
 };
 
 // TODO: Do we need this?
-GMapsCartoDBLayerGroupView.prototype = new wax.g.connector();
+GMapsCartoDBLayerGroupView.prototype = new wax.g.connector(); // eslint-disable-line
 GMapsCartoDBLayerGroupView.prototype.interactionClass = wax.g.interaction;
 _.extend(
   GMapsCartoDBLayerGroupView.prototype,
@@ -279,17 +279,18 @@ _.extend(
       // If the map is fixed at the top of the window, we can't use offsetParent
       // cause there might be some scrolling that we need to take into account.
       if (obj.offsetParent && obj.offsetTop > 0) {
+        var point;
         do {
           curleft += obj.offsetLeft;
           curtop += obj.offsetTop;
-        } while (obj = obj.offsetParent);
-        var point = this._newPoint(
+        } while (obj = obj.offsetParent); // eslint-disable-line
+        point = this._newPoint(
           x - curleft, y - curtop);
       } else {
         var rect = obj.getBoundingClientRect();
         var scrollX = (window.scrollX || window.pageXOffset);
         var scrollY = (window.scrollY || window.pageYOffset);
-        var point = this._newPoint(
+        point = this._newPoint(
           (o.e.clientX ? o.e.clientX : x) - rect.left - obj.clientLeft - scrollX,
           (o.e.clientY ? o.e.clientY : y) - rect.top - obj.clientTop - scrollY);
       }

@@ -3,11 +3,11 @@ var $ = require('jquery');
 var config = require('../../cdb.config');
 
 var ErrorModel = Backbone.Model.extend({
-  url: function() {
+  url: function () {
     return config.REPORT_ERROR_URL;
   },
 
-  initialize: function() {
+  initialize: function () {
     this.set({ browser: JSON.stringify($.browser) });
   }
 });

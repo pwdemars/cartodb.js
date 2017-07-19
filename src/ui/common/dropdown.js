@@ -1,5 +1,4 @@
 var $ = require('jquery');
-var cdb = require('cdb');
 var _ = require('underscore');
 var templates = require('cdb.templates');
 var View = require('../../core/view');
@@ -27,22 +26,22 @@ var Dropdown = View.extend({
   className: 'dropdown',
 
   events: {
-    "click ul li a" : "_fireClick"
+    'click ul li a': '_fireClick'
   },
 
   default_options: {
     width: 160,
     speedIn: 150,
     speedOut: 300,
-    vertical_position: "down",
-    horizontal_position: "right",
-    tick: "right",
+    vertical_position: 'down',
+    horizontal_position: 'right',
+    tick: 'right',
     vertical_offset: 0,
     horizontal_offset: 0
   },
 
-  initialize: function() {
-    _.bindAll(this, "open", "hide", "_handleClick", "_keydown");
+  initialize: function () {
+    _.bindAll(this, 'open', 'hide', '_handleClick', '_keydown');
 
     // Extend options
     _.defaults(this.options, this.default_options);
@@ -55,86 +54,85 @@ var Dropdown = View.extend({
     }
 
     // Bind to target
-    $(this.options.target).bind({"click": this._handleClick});
+    $(this.options.target).bind({ 'click': this._handleClick });
 
     // Bind ESC key
     $(document).bind('keydown', this._keydown);
 
     // Is open flag
     this.isOpen = false;
-
   },
 
-  render: function() {
+  render: function () {
     // Render
     var $el = this.$el;
     $el
       .html(this.template_base(this.options))
       .css({
         width: this.options.width
-      })
+      });
     return this;
   },
 
-  _handleClick: function(ev) {
-    //Check if the dropdown is visible to hiding with the click on the target
-    if (ev){
+  _handleClick: function (ev) {
+    // Check if the dropdown is visible to hiding with the click on the target
+    if (ev) {
       ev.preventDefault();
       ev.stopPropagation();
     }
     // If visible
-    if (this.isOpen){
+    if (this.isOpen) {
       this.hide();
-    }else{
+    } else {
       this.open();
     }
   },
 
-  _keydown: function(e) {
+  _keydown: function (e) {
     if (e.keyCode === 27) {
       this.hide();
     }
   },
 
-  hide: function() {
+  hide: function () {
     this.isOpen = false;
     this.$el.hide();
   },
 
-  show: function() {
+  show: function () {
     this.$el.css({
-      display: "block",
+      display: 'block',
       opacity: 1
     });
     this.isOpen = true;
   },
 
-  open: function(ev,target) {
+  open: function (ev, target) {
     // Target
     var $target = target && $(target) || this.options.target;
     this.options.target = $target;
 
     // Positionate
-    var targetPos     = $target[this.options.position || 'offset']()
-      , targetWidth   = $target.outerWidth()
-      , targetHeight  = $target.outerHeight()
-      , elementWidth  = this.$el.outerWidth()
-      , elementHeight = this.$el.outerHeight()
-      , self = this;
+    var targetPos = $target[this.options.position || 'offset']();
+    var targetWidth = $target.outerWidth();
+    var targetHeight = $target.outerHeight();
+    var elementWidth = this.$el.outerWidth();
+    var elementHeight = this.$el.outerHeight();
+    var self = this;
 
     this.$el.css({
-      top: targetPos.top + parseInt((self.options.vertical_position == "up") ? (- elementHeight - 10 - self.options.vertical_offset) : (targetHeight + 10 - self.options.vertical_offset)),
-      left: targetPos.left + parseInt((self.options.horizontal_position == "left") ? (self.options.horizontal_offset - 15) : (targetWidth - elementWidth + 15 - self.options.horizontal_offset))
+      /* eslint-disable */
+      top: targetPos.top + parseInt((self.options.vertical_position === 'up') ? (-elementHeight - 10 - self.options.vertical_offset) : (targetHeight + 10 - self.options.vertical_offset)),
+      left: targetPos.left + parseInt((self.options.horizontal_position === 'left') ? (self.options.horizontal_offset - 15) : (targetWidth - elementWidth + 15 - self.options.horizontal_offset))
+      /* eslint-enable */
     })
-    .addClass(
+      .addClass(
       // Add vertical and horizontal position class
-      (this.options.vertical_position == "up" ? "vertical_top" : "vertical_bottom" )
-      + " " +
-      (this.options.horizontal_position == "right" ? "horizontal_right" : "horizontal_left" )
-      + " " +
+      (this.options.vertical_position === 'up' ? 'vertical_top' : 'vertical_bottom') + ' ' +
+      (this.options.horizontal_position === 'right' ? 'horizontal_right' : 'horizontal_left') + ' ' +
       // Add tick class
-      "tick_" + this.options.tick
-    )
+      'tick_' + this.options.tick
+      );
 
     // Show it
     this.show();
@@ -143,14 +141,14 @@ var Dropdown = View.extend({
     this.isOpen = true;
   },
 
-  clean: function() {
-    $(this.options.target).unbind({"click": this._handleClick});
+  clean: function () {
+    $(this.options.target).unbind({ 'click': this._handleClick });
     $(document).unbind('keydown', this._keydown);
     View.prototype.clean.apply(this, arguments);
   },
 
-  _fireClick: function(ev) {
-    this.trigger("optionClicked", ev, this.el);
+  _fireClick: function (ev) {
+    this.trigger('optionClicked', ev, this.el);
   }
 });
 

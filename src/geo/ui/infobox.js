@@ -11,61 +11,59 @@ var InfoBox = View.extend({
     width: 200
   },
 
-  initialize: function() {
-    var self = this;
+  initialize: function () {
     _.defaults(this.options, this.defaults);
-    if(this.options.layer) {
+    if (this.options.layer) {
       this.enable();
     }
     this.setTemplate(this.options.template || this.defaultTemplate, 'mustache');
   },
 
-  setTemplate: function(tmpl) {
+  setTemplate: function (tmpl) {
     this.template = Template.compile(tmpl, 'mustache');
   },
 
-  enable: function() {
-    if(this.options.layer) {
+  enable: function () {
+    if (this.options.layer) {
       this.options.layer
-        .on('featureOver', function(e, latlng, pos, data) {
+        .on('featureOver', function (e, latlng, pos, data) {
           this.render(data).show();
         }, this)
-        .on('featureOut', function() {
+        .on('featureOut', function () {
           this.hide();
         }, this);
     }
   },
 
-  disable: function() {
-    if(this.options.layer) {
+  disable: function () {
+    if (this.options.layer) {
       this.options.layer.off(null, null, this);
     }
   },
 
   // set position based on a string like "top|right", "top|left", "bottom|righ"...
-  setPosition: function(pos) {
+  setPosition: function (pos) {
     var props = {};
-    if(pos.indexOf('top') !== -1) {
+    if (pos.indexOf('top') !== -1) {
       props.top = this.options.pos_margin;
-    } else if(pos.indexOf('bottom') !== -1) {
+    } else if (pos.indexOf('bottom') !== -1) {
       props.bottom = this.options.pos_margin;
     }
 
-    if(pos.indexOf('left') !== -1) {
+    if (pos.indexOf('left') !== -1) {
       props.left = this.options.pos_margin;
-    } else if(pos.indexOf('right') !== -1) {
+    } else if (pos.indexOf('right') !== -1) {
       props.right = this.options.pos_margin;
     }
     this.$el.css(props);
-
   },
 
-  render: function(data) {
-    this.$el.html( this.template(data) );
-    if(this.options.width) {
+  render: function (data) {
+    this.$el.html(this.template(data));
+    if (this.options.width) {
       this.$el.css('width', this.options.width);
     }
-    if(this.options.position) {
+    if (this.options.position) {
       this.setPosition(this.options.position);
     }
     return this;

@@ -20,29 +20,29 @@
  */
 cdb.ui.common.TabPane = cdb.core.View.extend({
 
-  initialize: function() {
-      this.tabs = {};
-      this.activeTab  = null;
-      this.activePane = null;
+  initialize: function () {
+    this.tabs = {};
+    this.activeTab = null;
+    this.activePane = null;
   },
 
-  addTab: function(name, view, options) {
+  addTab: function (name, view, options) {
     options = options || { active: true };
-    if(this.tabs[name] !== undefined) {
-      cdb.log.debug(name + "already added");
+    if (this.tabs[name] !== undefined) {
+      cdb.log.debug(name + 'already added');
     } else {
       this.tabs[name] = view.cid;
       this.addView(view);
-      if(options.after !== undefined) {
+      if (options.after !== undefined) {
         var e = this.$el.children()[options.after];
         view.$el.insertAfter(e);
-      } else if(options.prepend) {
+      } else if (options.prepend) {
         this.$el.prepend(view.el);
       } else {
         this.$el.append(view.el);
       }
       this.trigger('tabAdded', name, view);
-      if(options.active) {
+      if (options.active) {
         this.active(name);
       } else {
         view.hide();
@@ -50,8 +50,8 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
     }
   },
 
-  getPreviousPane: function() {
-    var tabs  = _.toArray(this.tabs);
+  getPreviousPane: function () {
+    var tabs = _.toArray(this.tabs);
     var panes = _.toArray(this._subviews);
 
     var i = _.indexOf(tabs, this.activePane.cid) - 1;
@@ -60,8 +60,8 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
     return panes[i];
   },
 
-  getNextPane: function() {
-    var tabs  = _.toArray(this.tabs);
+  getNextPane: function () {
+    var tabs = _.toArray(this.tabs);
     var panes = _.toArray(this._subviews);
 
     var i = 1 + _.indexOf(tabs, this.activePane.cid);
@@ -70,31 +70,31 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
     return panes[i];
   },
 
-  getPane: function(name) {
+  getPane: function (name) {
     var vid = this.tabs[name];
     return this._subviews[vid];
   },
 
-  getActivePane: function() {
+  getActivePane: function () {
     return this.activePane;
   },
 
-  size: function() {
+  size: function () {
     return _.size(this.tabs);
   },
 
-  clean: function() {
+  clean: function () {
     this.removeTabs();
-    cdb.core.View.prototype.clean.call(this)
+    cdb.core.View.prototype.clean.call(this);
   },
 
-  removeTab: function(name) {
+  removeTab: function (name) {
     if (this.tabs[name] !== undefined) {
       var vid = this.tabs[name];
       this._subviews[vid].clean();
       delete this.tabs[name];
 
-      if (this.activeTab == name) {
+      if (this.activeTab === name) {
         this.activeTab = null;
       }
 
@@ -104,8 +104,8 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
     }
   },
 
-  removeTabs: function() {
-    for(var name in this.tabs) {
+  removeTabs: function () {
+    for (var name in this.tabs) {
       var vid = this.tabs[name];
       this._subviews[vid].clean();
       delete this.tabs[name];
@@ -113,30 +113,27 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
     this.activeTab = null;
   },
 
-  active: function(name) {
-    var
-    self = this,
-    vid  = this.tabs[name];
+  active: function (name) {
+    var self = this;
+    var vid = this.tabs[name];
 
     if (vid !== undefined) {
-
       if (this.activeTab !== name) {
-
         var v = this._subviews[vid];
 
         if (this.activeTab) {
-          var vid_old  = this._subviews[this.tabs[this.activeTab]];
+          var vid_old = this._subviews[this.tabs[this.activeTab]];
 
           vid_old.hide();
-          self.trigger('tabDisabled', this.activeTab , vid_old);
-          self.trigger('tabDisabled:' + this.activeTab,  vid_old);
-          if(vid_old.deactivated) {
+          self.trigger('tabDisabled', this.activeTab, vid_old);
+          self.trigger('tabDisabled:' + this.activeTab, vid_old);
+          if (vid_old.deactivated) {
             vid_old.deactivated();
           }
         }
 
         v.show();
-        if(v.activated) {
+        if (v.activated) {
           v.activated();
         }
 
@@ -144,20 +141,20 @@ cdb.ui.common.TabPane = cdb.core.View.extend({
         this.activePane = v;
 
         self.trigger('tabEnabled', name, v);
-        self.trigger('tabEnabled:' + name,  v);
+        self.trigger('tabEnabled:' + name, v);
       }
 
       return this.activePane;
     }
   },
 
-  render: function() {
-      return this;
+  render: function () {
+    return this;
   },
 
-  each: function(fn) {
+  each: function (fn) {
     var self = this;
-    _.each(this.tabs, function(cid, tab) {
+    _.each(this.tabs, function (cid, tab) {
       fn(tab, self.getPane(tab));
     });
   }

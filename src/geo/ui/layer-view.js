@@ -13,24 +13,24 @@ var View = require('../../core/view');
  */
 var LayerView = View.extend({
 
-  tagName: "li",
+  tagName: 'li',
 
   defaults: {
+    /* eslint-disable */
     template: '\
       <a class="layer" href="#/change-layer"><%- layerName %></a>\
       <a href="#switch" class="right <%- visible ? "enabled" : "disabled" %> switch"><span class="handle"></span></a>\
     '
   },
-
+  /* eslint-enable */
   events: {
-    "click": '_onSwitchClick'
+    'click': '_onSwitchClick'
   },
 
-  initialize: function() {
-
+  initialize: function () {
     if (!this.model.has('visible')) this.model.set('visible', false);
 
-    this.model.bind("change:visible", this._onSwitchSelected, this);
+    this.model.bind('change:visible', this._onSwitchSelected, this);
 
     this.add_related_model(this.model);
 
@@ -40,7 +40,7 @@ var LayerView = View.extend({
     this.template = this.options.template ? templates.getTemplate(this.options.template) : _.template(this.defaults.template);
   },
 
-  render: function() {
+  render: function () {
     var attrs = {
       layerName: this.model.getName(),
       visible: this.model.isVisible()
@@ -52,24 +52,23 @@ var LayerView = View.extend({
   /*
   * Throw an event when the user clicks in the switch button
   */
-  _onSwitchSelected: function() {
+  _onSwitchSelected: function () {
     var enabled = this.model.get('visible');
 
     // Change switch
-    this.$el.find(".switch")
+    this.$el.find('.switch')
       .removeClass(enabled ? 'disabled' : 'enabled')
-      .addClass(enabled    ? 'enabled'  : 'disabled');
+      .addClass(enabled ? 'enabled' : 'disabled');
 
     // Send trigger
     this.trigger('switchChanged');
-
   },
 
-  _onSwitchClick: function(e){
+  _onSwitchClick: function (e) {
     this.killEvent(e);
 
     // Set model
-    this.model.set("visible", !this.model.get("visible"));
+    this.model.set('visible', !this.model.get('visible'));
   }
 
 });
