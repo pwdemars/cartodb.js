@@ -1,0 +1,11 @@
+{
+    "extends": "eslint-config-semistandard",
+    "globals": {
+        "cdb": true,
+        "_": true
+    },
+    "env": {
+        "browser": true,
+        "jasmine": true
+    }
+}

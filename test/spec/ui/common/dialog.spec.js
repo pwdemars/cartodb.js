@@ -1,45 +1,44 @@
 var $ = require('jquery');
 var Dialog = require('../../../../src/ui/common/dialog');
 
-describe('ui/common/dialog', function() {
-
+describe('ui/common/dialog', function () {
   var dialog;
-  beforeEach(function() {
+  beforeEach(function () {
     dialog = new Dialog({el: $('<div>')});
-    dialog.ok = function() {};
-    dialog.cancel = function() {};
+    dialog.ok = function () {};
+    dialog.cancel = function () {};
     spyOn(dialog, 'ok');
     spyOn(dialog, 'cancel');
   });
 
-  it("should show element on open", function() {
+  it('should show element on open', function () {
     dialog.open();
     expect(dialog.$el.css('display')).toEqual('block');
   });
 
-  it("should hide element on close", function() {
+  it('should hide element on close', function () {
     dialog.open();
     dialog.hide();
     expect(dialog.$el.css('display')).toEqual('none');
   });
 
-  it("should hide element on ok", function() {
+  it('should hide element on ok', function () {
     dialog.open();
     dialog._ok();
     expect(dialog.$el.css('display')).toEqual('none');
   });
 
-  it("should call cancel on _cancel", function() {
+  it('should call cancel on _cancel', function () {
     dialog._ok();
     expect(dialog.ok).toHaveBeenCalled();
   });
 
-  it("should call ok on _ok", function() {
+  it('should call ok on _ok', function () {
     dialog._cancel();
     expect(dialog.cancel).toHaveBeenCalled();
   });
 
-  it("should append it to body and be rendered", function() {
+  it('should append it to body and be rendered', function () {
     spyOn(dialog, 'render').and.returnValue(dialog);
     var r = dialog.appendToBody();
     expect(dialog.render).toHaveBeenCalled();
@@ -47,12 +46,11 @@ describe('ui/common/dialog', function() {
     expect(r).toEqual(dialog);
   });
 
-  it("should render title", function() {
-      var dialog = new Dialog({
-        title: 'test',
-        template_base: '<%= title %>'
-      });
-      expect(dialog.render().$el.html()).toEqual('test');
+  it('should render title', function () {
+    var dialog = new Dialog({
+      title: 'test',
+      template_base: '<%= title %>'
+    });
+    expect(dialog.render().$el.html()).toEqual('test');
   });
-
 });

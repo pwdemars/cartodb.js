@@ -1,8 +1,8 @@
 var $ = require('jquery');
 var Dropdown = require('../../../../src/ui/common/dropdown');
 
-describe('ui/common/dropdown', function() {
-  beforeEach(function() {
+describe('ui/common/dropdown', function () {
+  beforeEach(function () {
     this.$el = $('<div><button id="btn"></button></div>');
     this.view = new Dropdown({
       el: $('<div>'),
@@ -10,8 +10,8 @@ describe('ui/common/dropdown', function() {
     });
   });
 
-  describe('.clean', function() {
-    it('should unbind click handler on target', function() {
+  describe('.clean', function () {
+    it('should unbind click handler on target', function () {
       this.targetClickSpy = jasmine.createSpy('click');
       this.$el.on('click', this.targetClickSpy);
 
@@ -25,10 +25,10 @@ describe('ui/common/dropdown', function() {
       expect(this.targetClickSpy).toHaveBeenCalled();
     });
 
-    it('should unbind event handlers on document', function() {
+    it('should unbind event handlers on document', function () {
       // spy on internal call, since spying on _keydown fn do not work for some reason
       spyOn(this.view, 'hide');
-      var keyEsc = function() {
+      var keyEsc = function () {
         var e = $.Event('keydown');
         e.keyCode = 27; // ESC
         $(document).trigger(e);

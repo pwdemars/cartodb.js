@@ -1,18 +1,17 @@
 var $ = require('jquery');
 var Notification = require('../../../../src/ui/common/notification');
 
-describe('ui/common/notification', function() {
-
+describe('ui/common/notification', function () {
   var notification;
-  beforeEach(function() {
+  beforeEach(function () {
     notification = new Notification({
-        el: $('<div>'),
-        template: 'template'
+      el: $('<div>'),
+      template: 'template'
     });
-    //spyOn(dialog, 'cancel');
+    // spyOn(dialog, 'cancel');
   });
 
-  it("open should show the element", function(done) {
+  it('open should show the element', function (done) {
     expect(notification.$el.css('display')).toEqual('none');
     notification.open();
     setTimeout(function () {
@@ -21,7 +20,7 @@ describe('ui/common/notification', function() {
     }, 500);
   });
 
-  it("should be closed on timeout", function(done) {
+  it('should be closed on timeout', function (done) {
     notification = new Notification({
       el: $('<div>'),
       timeout: 250,
@@ -34,6 +33,4 @@ describe('ui/common/notification', function() {
       done();
     }, 500);
   });
-
-
 });
