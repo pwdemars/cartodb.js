@@ -7,7 +7,7 @@
 var semver = require('semver');
 
 module.exports = {
-  task: function(grunt, config) {
+  task: function (grunt, config) {
     return {
       bump: {
         options: {
@@ -58,11 +58,11 @@ module.exports = {
               }
             }
           ],
-          then: function(results, done) {
+          then: function (results, done) {
             var bump = grunt.config.get('bump');
             var version = '';
 
-            if (bump.increment !== "custom") {
+            if (bump.increment !== 'custom') {
               switch (bump.increment) {
                 case 'build':
                   version = config.version.bugfixing;
@@ -81,6 +81,6 @@ module.exports = {
           }
         }
       }
-    }
+    };
   }
-}
+};

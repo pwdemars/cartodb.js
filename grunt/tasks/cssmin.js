@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  task: function() {
+  task: function () {
     return {
       dist: {
         options: {
@@ -23,6 +23,6 @@ module.exports = {
         }
       }
 
-    }
+    };
   }
-}
+};

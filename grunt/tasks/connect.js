@@ -3,7 +3,7 @@
  *
  */
 module.exports = {
-  task: function(config) {
+  task: function (config) {
     return {
       server: {
         options: {
@@ -16,6 +16,6 @@ module.exports = {
           }
         }
       }
-    }
+    };
   }
-}
+};

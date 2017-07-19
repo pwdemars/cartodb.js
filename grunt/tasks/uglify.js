@@ -2,14 +2,14 @@ var _ = require('underscore');
 var bundles = require('./_browserify-bundles');
 
 module.exports = {
-  task: function(grunt) {
+  task: function (grunt) {
     var cfg = {};
     var defaultOptions = {
       sourceMap: true,
       banner: [
         '// CartoDB.js version: <%= grunt.config("bump.version") %>',
         '// sha: <%= grunt.config.get("gitinfo").local.branch.current.SHA %>',
-      ].join("\n"),
+      ].join('\n'),
     };
 
     for (var bundleName in bundles) {
@@ -24,10 +24,10 @@ module.exports = {
             sourceMapIn: src.replace('.js', '.map')
           }, defaultOptions),
           files: files
-        }
+        };
       }
     }
 
     return cfg;
   }
-}
+};

@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  task: function(grunt, config) {
+  task: function (grunt, config) {
     return {
 
       cdb: {
@@ -62,7 +62,7 @@ module.exports = {
             match: '/\/<%= config.version.minor %>\//gi',
             replacement: "/<%= grunt.config('bump.minor') %>/",
             expression: true
-          },{
+          }, {
             match: '/<%= config.version.bugfixing %>/gi',
             replacement: "<%= grunt.config('bump.version') %>",
             expression: true
@@ -98,7 +98,7 @@ module.exports = {
             match: '/\/<%= config.version.minor %>\//gi',
             replacement: "/<%= grunt.config('bump.minor') %>/",
             expression: true
-          },{
+          }, {
             match: '/<%= config.version.bugfixing %>/gi',
             replacement: "<%= grunt.config('bump.version') %>",
             expression: true
@@ -127,6 +127,6 @@ module.exports = {
           dest: ''
         }]
       },
-    }
+    };
   }
-}
+};

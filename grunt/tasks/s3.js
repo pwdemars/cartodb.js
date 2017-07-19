@@ -5,12 +5,12 @@
  */
 
 module.exports = {
-  task: function(grunt, config) {
+  task: function (grunt, config) {
     return {
       options: {
-        accessKeyId: "<%= secrets.S3_KEY %>",
-        secretAccessKey: "<%= secrets.S3_SECRET %>",
-        bucket: "<%= secrets.S3_BUCKET %>",
+        accessKeyId: '<%= secrets.S3_KEY %>',
+        secretAccessKey: '<%= secrets.S3_SECRET %>',
+        bucket: '<%= secrets.S3_BUCKET %>',
         dryRun: false
       },
 
@@ -33,7 +33,7 @@ module.exports = {
               '*.js',
               '!_*.js'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>'
           }
         ]
       },
@@ -53,15 +53,15 @@ module.exports = {
         },
         files: [{
             // Minor version
-            action: 'upload',
-            expand: true,
-            cwd: 'dist',
-            src: [
+          action: 'upload',
+          expand: true,
+          cwd: 'dist',
+          src: [
               '*.js',
               '!_*.js'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>"
-          }
+          dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>'
+        }
         ]
       },
 
@@ -83,7 +83,7 @@ module.exports = {
             src: [
               'themes/**/*.css'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>'
           }
         ]
       },
@@ -100,14 +100,14 @@ module.exports = {
         },
         files: [{
             // Minor version
-            action: 'upload',
-            expand: true,
-            cwd: 'dist',
-            src: [
+          action: 'upload',
+          expand: true,
+          cwd: 'dist',
+          src: [
               'themes/**/*.css'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>"
-          }
+          dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>'
+        }
         ]
       },
 
@@ -129,7 +129,7 @@ module.exports = {
             src: [
               'themes/**/*.png'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>'
           }
         ]
       },
@@ -153,7 +153,7 @@ module.exports = {
             src: [
               'themes/**/*.png'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>'
           }
         ]
       },
@@ -176,7 +176,7 @@ module.exports = {
             src: [
               'themes/**/*.gif'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.bugfixing %>'
           }
         ]
       },
@@ -200,18 +200,18 @@ module.exports = {
             src: [
               'themes/**/*.gif'
             ],
-            dest: "cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>"
+            dest: 'cartodb.js/v<%= config.version.major %>/<%= config.version.minor %>'
           }
         ]
       }
-    }
+    };
   }
-}
+};
 
 
 // How to know if the version is prerelease or
 // not :(
-function isVersionPrerelease(v) {
+function isVersionPrerelease (v) {
   var v = v.split('.');
   return !/^[0-9]+$/.test(v[v.length - 1]);
 }

@@ -1,5 +1,5 @@
 module.exports = {
-  task: function(grunt, config) {
+  task: function (grunt, config) {
     return {
       themes: {
         options: {},
@@ -10,6 +10,6 @@ module.exports = {
           ]
         }
       }
-    }
+    };
   }
-}
+};

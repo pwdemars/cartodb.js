@@ -5,7 +5,7 @@
  */
 
 module.exports = {
-  task: function() {
+  task: function () {
     return {
       options: {
         key: '<%= secrets.FASTLY_API_KEY %>'
@@ -16,6 +16,6 @@ module.exports = {
           serviceId: '<%= secrets.FASTLY_CARTODB_SERVICE %>'
         }
       },
-    }
+    };
   }
-}
+};

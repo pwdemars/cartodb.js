@@ -3,7 +3,7 @@
  *
  */
 module.exports = {
-  task: function() {
+  task: function () {
     return {
       dist: {
         files: [{
@@ -16,6 +16,6 @@ module.exports = {
           ]
         }]
       }
-    }
+    };
   }
-}
+};

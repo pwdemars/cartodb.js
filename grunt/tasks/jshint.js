@@ -3,7 +3,7 @@
  *
  */
 module.exports = {
-  task: function() {
+  task: function () {
     return {
       options: {
         jshintrc: 'grunt/.jshintrc',
@@ -13,6 +13,6 @@ module.exports = {
         'Gruntfile.js',
         'test/spec/**/*.js'
       ]
-    }
+    };
   }
-}
+};

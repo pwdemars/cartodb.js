@@ -67,7 +67,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('publish', function (target) {
     if (!grunt.file.exists('secrets.json')) {
-      grunt.fail.fatal('secrets.json file does not exist, copy secrets.example.json and rename it' , 1);
+      grunt.fail.fatal('secrets.json file does not exist, copy secrets.example.json and rename it', 1);
     }
 
     // Read secrets
@@ -88,10 +88,10 @@ module.exports = function (grunt) {
     ]);
   });
 
-  grunt.registerTask('set_current_version', function() {
+  grunt.registerTask('set_current_version', function () {
     var version = pkg.version;
     var minor = version.split('.');
-    minor.pop()
+    minor.pop();
     minor = minor.join('.');
     var options = {
       version: version,
@@ -113,7 +113,7 @@ module.exports = function (grunt) {
 
   grunt.registerTask('invalidate', function () {
     if (!grunt.file.exists('secrets.json')) {
-      grunt.fail.fatal('secrets.json file does not exist, copy secrets.example.json and rename it' , 1);
+      grunt.fail.fatal('secrets.json file does not exist, copy secrets.example.json and rename it', 1);
     }
 
     // Read secrets

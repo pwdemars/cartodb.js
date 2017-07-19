@@ -2,7 +2,7 @@ var bundles = require('./_browserify-bundles');
 
 // Extracts inlined source map from files (browserify bundles in this case).
 // Expected to be run after browserify task
-exports.task = function() {
+exports.task = function () {
   var files = {};
 
   for (var bundleName in bundles) {

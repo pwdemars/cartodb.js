@@ -3,7 +3,7 @@
  *
  */
 module.exports = {
-  task: function() {
+  task: function () {
     return {
       distImages: {
         options: {
@@ -16,6 +16,6 @@ module.exports = {
           dest: '<%= config.dist %>/themes/img'
         }]
       }
-    }
+    };
   }
-}
+};
