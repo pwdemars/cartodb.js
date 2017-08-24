@@ -27,4 +27,7 @@ logger.log('cartodb.js ' + cdb.VERSION);
 
 cdb.helpers.GeoJSONHelper = require('./geo/geometry-models/geojson-helper');
 
+// v4
+cdb.sources = require('./sources');
+
 module.exports = cdb;

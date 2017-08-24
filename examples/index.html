@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <!-- Include Jquery -->
+  <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+  <!-- Include Leaflet library and styles -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.2.0/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.2.0/dist/leaflet.js"></script>
+  <!-- Include Wax -->
+  <script src="../vendor/wax.cartodb.js"></script>
+  <!--Include carto styles  -->
+  <link rel="stylesheet" href="../dist/themes/css/cartodb.css" />
+  <!-- Include cartodb.js Library -->
+  <script src="../dist/carto.js"></script>
+  <title>Carto.js Playground</title>
+</head>
+<style>
+  #map {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+  }
+</style>
+
+<body>
+  <div id="map"></div>
+</body>
+<!-- Include your tests here -->
+<script>
+  var map = L.map('map', {
+    center: [51.505, -0.09],
+    zoom: 13
+  });
+
+  L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>, &copy;<a href="https://carto.com/attribution">CARTO</a>'
+  }).addTo(map);
+
+
+  let citiesSource = new carto.sources.SQL('SELECT * FROM cities;');
+  // let citiesStyle = new carto.style.CartoCSS(`
+  //       #cities {
+  //           [population > 10000] {
+  //               marker-fill: red;
+  //           }
+  //       }
+  //   `);
+  // let citiesLayer = new carto.layer.CARTOLayer({
+  //   source: citiesSource,
+  //   style: citiesStyle
+  // });
+
+  // carto.leaflet.cartoLayerGroup({
+  //   username: 'iago-carto',
+  //   backendURL: 'https://{user}.carto.com:443',
+  //   apiKey: '552dc6b016acb007acf0b9091719be8d0a37847b',
+  //   layers: [citiesLayer]
+  // }).addTo(map);
+
+</script>
+
+</html>
