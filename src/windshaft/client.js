@@ -34,7 +34,7 @@ var WindshaftClient = function (settings) {
       post: WindshaftConfig.MAPS_API_BASE_URL
     };
   }
-
+  
   this.url = settings.urlTemplate.replace('{user}', settings.userName);
 };
 

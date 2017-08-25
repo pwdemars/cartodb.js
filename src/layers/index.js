@@ -1,16 +1,17 @@
-function layer(params) {
-  var source = params.source;
-  var style = params.style;
+var cartoDBLayerModel = require('../geo/map/cartodb-layer.js');
 
-  var l = {
-    type: 'mapnik',
-    options: {
-      cartocss_version: '2.1.1',
-      cartocss: style,
-      sql: source
+function layer(params) {
+  /**
+   * TODO allow a cartodbLayerModel to be instantiated without vis.
+   */
+  return new cartoDBLayerModel({
+    sql: params.source,
+    cartocss:  params.style
+  }, {
+    vis: {
+      on: function () {}
     }
-  };
-  return l;
+  });
 }
 
 module.exports = {

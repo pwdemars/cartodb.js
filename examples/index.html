@@ -55,17 +55,14 @@
 
   let citiesLayer = carto.layers.layer({ source: citiesSource, style: citiesStyle });
 
-  let layerGroup = carto.leaflet.cartoLayerGroup({
+  var layerGroup = carto.leaflet.cartoLayerGroup({
     username: 'iago-carto',
-    url: 'http://iago-carto.carto.com/api/v1/map',
+    url: 'http://{user}.carto.com',
     apiKey: '552dc6b016acb007acf0b9091719be8d0a37847b',
     layers: [citiesLayer]
   });
 
   layerGroup.addTo(map);
-
-
-
 </script>
 
 </html>
