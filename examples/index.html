@@ -32,8 +32,8 @@
 <!-- Include your tests here -->
 <script>
   var map = L.map('map', {
-    center: [51.505, -0.09],
-    zoom: 13
+    center: [42.5897007687178, -8.40],
+    zoom: 4
   });
 
   L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png', {
@@ -42,25 +42,29 @@
   }).addTo(map);
 
 
-  let citiesSource = new carto.sources.SQL('SELECT * FROM cities;');
-  // let citiesStyle = new carto.style.CartoCSS(`
-  //       #cities {
-  //           [population > 10000] {
-  //               marker-fill: red;
-  //           }
-  //       }
-  //   `);
-  // let citiesLayer = new carto.layer.CARTOLayer({
-  //   source: citiesSource,
-  //   style: citiesStyle
-  // });
+  let citiesSource = carto.sources.SQL('SELECT * FROM lugares');
 
-  // carto.leaflet.cartoLayerGroup({
-  //   username: 'iago-carto',
-  //   backendURL: 'https://{user}.carto.com:443',
-  //   apiKey: '552dc6b016acb007acf0b9091719be8d0a37847b',
-  //   layers: [citiesLayer]
-  // }).addTo(map);
+  let citiesStyle = carto.style.CartoCSS(`
+        #layer {
+            marker-fill: green;
+            [population > 1]{
+              marker-fill: red;
+            }
+        }
+    `);
+
+  let citiesLayer = carto.layers.layer({ source: citiesSource, style: citiesStyle });
+
+  let layerGroup = carto.leaflet.cartoLayerGroup({
+    username: 'iago-carto',
+    url: 'http://iago-carto.carto.com/api/v1/map',
+    apiKey: '552dc6b016acb007acf0b9091719be8d0a37847b',
+    layers: [citiesLayer]
+  });
+
+  layerGroup.addTo(map);
+
+
 
 </script>
 

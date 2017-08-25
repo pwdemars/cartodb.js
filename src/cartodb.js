@@ -29,5 +29,8 @@ cdb.helpers.GeoJSONHelper = require('./geo/geometry-models/geojson-helper');
 
 // v4
 cdb.sources = require('./sources');
+cdb.style = require('./style');
+cdb.layers = require('./layers');
+cdb.leaflet = require('./leaflet');
 
 module.exports = cdb;
