@@ -4,14 +4,18 @@ var MapsAPIClient = require('../windshaft/client');
 var LayersCollection = require('../geo/map/layers');
 var CartoDBLayerGroup = require('../geo/cartodb-layer-group');
 var ModelUpdater = require('../windshaft-integration/model-updater');
+var Layer = require('../layers').Layer;
 
 var HEADERS = new Headers({
   'Content-Type': 'application/json'
 });
 
+
 function cartoLayerGroup(params) {
+  var _view;
   var anonymousMap;
   var modelUpdater;
+  var visModel;
 
   // Responsabilities:
   //   - Call the windshaft api to instantiate the map.
@@ -21,7 +25,7 @@ function cartoLayerGroup(params) {
     userName: params.username
   });
 
-  var layersCollection = new LayersCollection(params.layers);
+  var layersCollection = new LayersCollection(params.layers.map(function (layer) { return layer.getCartoDBLayer(); }));
   var dataviewsCollection = new Backbone.Collection();
   var analysisCollection = new Backbone.Collection();
 
@@ -33,6 +37,28 @@ function cartoLayerGroup(params) {
     layersCollection: layersCollection
   });
 
+  visModel = {
+    setOk: function () { },
+    setError: function () { },
+    reload: function () {
+      return new Promise(function (resolve, reject) {
+        anonymousMap.createInstance({
+          success: function (response) {
+            _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
+            resolve();
+          },
+          error: function (err) {
+            if(err.length) {
+              // Procesar como array de errores y pintarlo bonito
+            }
+            // Procesar como error y pintarlo bonito
+            reject(err);
+          }
+        });
+      });
+    }
+  };
+
   // Responsabilities:
   //   - .updateModels(wrraper of response from Maps API) -> updates models:
   //      - layers (sets cartocss metadata, errors)
@@ -41,7 +67,7 @@ function cartoLayerGroup(params) {
   //      - layerGroupModel (sets urls, layer indexes)
   //      - visModel (errors)
   modelUpdater = new ModelUpdater({
-    visModel: { setOk: function () {} },
+    visModel: visModel,
     mapModel: {},
     layerGroupModel: cartoDBLayerGroup,
     layersCollection: layersCollection,
@@ -67,7 +93,6 @@ function cartoLayerGroup(params) {
     }
   });
 
-
   var promise = new Promise(function (resolve, reject) {
     anonymousMap.createInstance({
       success: resolve,
@@ -77,18 +102,26 @@ function cartoLayerGroup(params) {
 
   return {
     addTo: function addTo(leafletMap) {
-      promise
+      return promise
         .then(function (response) {
-          L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
+          _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
+          return leafletMap;
         })
         .catch(console.error);
     },
 
-    addLayer: function (layer) { },
-    removeLayer: function(layer){},
-    getLayers: function(){},
-    showLayer: function(layer){},
-    hideLayer: function(layer){},
+    addLayer: function (layer) {
+      if (!(layer instanceof Layer)) {
+        throw new TypeError('.addLayer requires a carto.layer object');
+      }
+      layer.setVis(visModel);
+      layersCollection.add(layer.getCartoDBLayer());
+      return visModel.reload();
+    },
+    removeLayer: function (layer) { },
+    getLayers: function () { },
+    showLayer: function (layer) { },
+    hideLayer: function (layer) { },
   };
 }
 

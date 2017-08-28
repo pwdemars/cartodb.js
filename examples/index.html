@@ -42,27 +42,44 @@
   }).addTo(map);
 
 
-  let citiesSource = carto.sources.SQL('SELECT * FROM lugares');
-
-  let citiesStyle = carto.style.CartoCSS(`
+  let smallCities = carto.sources.SQL('SELECT * FROM lugares where population <= 1');
+  let smallCitiesStyle = carto.style.CartoCSS(`
         #layer {
             marker-fill: green;
-            [population > 1]{
-              marker-fill: red;
-            }
         }
-    `);
+  `);
 
-  let citiesLayer = carto.layers.layer({ source: citiesSource, style: citiesStyle });
+  let bigCities = carto.sources.SQL('SELECT * FROM lugares where population > 1');
+  let bigCitiesStyle = carto.style.CartoCSS(`
+        #layer {
+            marker-fill: #FABADA;
+        }
+  `);
+
+  let smallCitiesLayer = carto.layers.layer({ source: smallCities, style: smallCitiesStyle });
+  let bigCitiesLayer = carto.layers.layer({ source: bigCities, style: bigCitiesStyle });
 
   var layerGroup = carto.leaflet.cartoLayerGroup({
     username: 'iago-carto',
     url: 'http://{user}.carto.com',
     apiKey: '552dc6b016acb007acf0b9091719be8d0a37847b',
-    layers: [citiesLayer]
+    layers: [smallCitiesLayer]
   });
 
-  layerGroup.addTo(map);
+  layerGroup.addTo(map)
+    .then(() => layerGroup.addLayer(bigCitiesLayer))
+    .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 0')))
+    .catch(console.error);
+
+
+
+
+
+  // Add and remove layer to LayerGroup
+  // Change SQL
+  // Change CartoCSS
+  // Show / hide layer
+
 </script>
 
 </html>

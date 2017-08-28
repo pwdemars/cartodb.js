@@ -76,7 +76,7 @@ var WindshaftMap = Backbone.Model.extend({
       this._modelUpdater.setErrors([ error ]);
 
       log.error(e.message);
-      options.error && options.error();
+      options.error && options.error(error);
     }
   },
 
@@ -106,7 +106,7 @@ var WindshaftMap = Backbone.Model.extend({
         this._trackRequest(request, response);
         var windshaftErrors = this._getErrorsFromResponse(response);
         this._modelUpdater.setErrors(windshaftErrors);
-        options.error && options.error();
+        options.error && options.error(windshaftErrors);
       }.bind(this)
     });
   },
