@@ -40,6 +40,9 @@ function cartoLayerGroup(params) {
   visModel = {
     setOk: function () { },
     setError: function () { },
+    repaint: function () {
+      _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
+    },
     reload: function () {
       return new Promise(function (resolve, reject) {
         anonymousMap.createInstance({
@@ -48,7 +51,7 @@ function cartoLayerGroup(params) {
             resolve();
           },
           error: function (err) {
-            if(err.length) {
+            if (err.length) {
               // Procesar como array de errores y pintarlo bonito
             }
             // Procesar como error y pintarlo bonito

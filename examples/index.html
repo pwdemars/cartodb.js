@@ -70,13 +70,17 @@
     .then(() => layerGroup.addLayer(bigCitiesLayer))
     .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 1')))
     .then(() => layerGroup.removeLayer(smallCitiesLayer))
+    .then(() => bigCitiesLayer.setStyle(carto.style.CartoCSS('#layer { marker-fill: #BAFADA; }')))
+    .then(() => layerGroup.addLayer(smallCitiesLayer))
+    .then(() => bigCitiesLayer.hide())
+    .then(() => bigCitiesLayer.show())
     .catch(console.error);
 
   // [x] Add layer to LayerGroup
   // [x] Remove layer to LayerGroup
   // [x] Change SQL (source)
-  // [ ] Change CartoCSS
-  // [ ] Show / hide layer
+  // [x] Change CartoCSS
+  // [x] Show / hide layer
   // [ ] API Key
   //   [ ] Valid API Key
   //   [ ] Invalid API Key

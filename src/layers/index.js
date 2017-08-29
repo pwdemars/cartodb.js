@@ -25,10 +25,25 @@ Layer.prototype.setVis = function (visModel) {
 };
 
 Layer.prototype.setSource = function (source) {
-  var self = this;
   // TODO: Check if source is source type
-  self._cartoLayerModel.set('sql', source);
-  return self._visModel.reload();
+  this._cartoLayerModel.set('sql', source);
+  return this._visModel.reload();
+};
+
+Layer.prototype.setStyle = function (style) {
+  // TODO: Check if source is style type
+  this._cartoLayerModel.set('cartocss', style);
+  return this._visModel.reload();
+};
+
+Layer.prototype.hide = function () {
+  this._cartoLayerModel.hide();
+  return this._visModel.repaint();
+};
+
+Layer.prototype.show = function () {
+  this._cartoLayerModel.show();
+  return this._visModel.repaint();
 };
 
 module.exports = {
