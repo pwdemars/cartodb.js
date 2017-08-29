@@ -126,6 +126,7 @@ var WindshaftMap = Backbone.Model.extend({
     return [];
   },
 
+  // TODO: Move to WindhsaftClient?
   _getParams: function () {
     var params = {
       stat_tag: this.get('statTag')

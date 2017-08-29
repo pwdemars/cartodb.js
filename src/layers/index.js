@@ -46,6 +46,10 @@ Layer.prototype.show = function () {
   return this._visModel.repaint();
 };
 
+Layer.prototype.isVisible = function(){
+  return this._cartoLayerModel.isVisible();
+};
+
 module.exports = {
   Layer: Layer,
   layer: function (params) {

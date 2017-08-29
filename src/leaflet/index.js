@@ -6,10 +6,6 @@ var CartoDBLayerGroup = require('../geo/cartodb-layer-group');
 var ModelUpdater = require('../windshaft-integration/model-updater');
 var Layer = require('../layers').Layer;
 
-var HEADERS = new Headers({
-  'Content-Type': 'application/json'
-});
-
 
 function cartoLayerGroup(params) {
   var _view;
@@ -17,12 +13,25 @@ function cartoLayerGroup(params) {
   var modelUpdater;
   var visModel;
 
+  if (!params.apiKey) {
+    throw new Error('API Key is required');
+  }
+
+  if (!params.url) {
+    throw new Error('URL  is required');
+  }
+
+  if (!params.username) {
+    throw new Error('Username is required');
+  }
+
   // Responsabilities:
   //   - Call the windshaft api to instantiate the map.
   //   - Decides when to use GET (JSON or lzma) or POST
   var mapsAPIClient = new MapsAPIClient({
     urlTemplate: params.url,
-    userName: params.username
+    userName: params.username,
+    // apiKey: params.apiKey,
   });
 
   var layersCollection = new LayersCollection(params.layers.map(function (layer) { return layer.getCartoDBLayer(); }));
@@ -33,9 +42,11 @@ function cartoLayerGroup(params) {
   //   - "Groups" CartoDBLayers
   //   - Gets set attrs (by ModelUpdater): urls (tiles, grids, attributes, etc.), index of layers in Maps API
   //   - Methods to generate tile URLs, grid URLs, etc:
-  var cartoDBLayerGroup = new CartoDBLayerGroup(null, {
-    layersCollection: layersCollection
-  });
+  var cartoDBLayerGroup = new CartoDBLayerGroup({
+    apiKey: params.apiKey // TODO: Use "authenticator" object instead of attribute
+  }, {
+      layersCollection: layersCollection
+    });
 
   visModel = {
     setOk: function () { },
@@ -44,19 +55,17 @@ function cartoLayerGroup(params) {
       _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
     },
     reload: function () {
+      if (!_view) {
+        console.info('map not initialized');
+        return Promise.resolve();
+      }
       return new Promise(function (resolve, reject) {
         anonymousMap.createInstance({
           success: function (response) {
             _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
             resolve();
           },
-          error: function (err) {
-            if (err.length) {
-              // Procesar como array de errores y pintarlo bonito
-            }
-            // Procesar como error y pintarlo bonito
-            reject(err);
-          }
+          error: reject
         });
       });
     }
@@ -82,40 +91,38 @@ function cartoLayerGroup(params) {
   //   - .toJSON() -> Generates payload (from collections) that is sent to Maps API 
   //   - .createInstance(...) -> Uses .toJSON() and uses client to sent request to Maps API
   //   - Backbone attrs & other methods -> Wraps response from Maps API and adds helper methods
-  anonymousMap = new AnonymousMap(null, {
-    layersCollection: layersCollection,
-    dataviewsCollection: dataviewsCollection,
-    analysisCollection: analysisCollection,
+  anonymousMap = new AnonymousMap({
+    apiKey: params.apiKey
+  }, {
+      layersCollection: layersCollection,
+      dataviewsCollection: dataviewsCollection,
+      analysisCollection: analysisCollection,
 
-    client: mapsAPIClient,
-    modelUpdater: modelUpdater,
+      client: mapsAPIClient,
+      modelUpdater: modelUpdater,
 
-    windshaftSettings: {
-      urlTemplate: params.url,
-      userName: params.username
-    }
-  });
-
-  var promise = new Promise(function (resolve, reject) {
-    anonymousMap.createInstance({
-      success: resolve,
-      error: reject
+      windshaftSettings: {
+        urlTemplate: params.url,
+        userName: params.username
+      }
     });
-  });
 
-  return {
+  var self = {
     addTo: function addTo(leafletMap) {
-      return promise
-        .then(function (response) {
-          _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
-          return leafletMap;
-        })
-        .catch(console.error);
+      return new Promise(function (resolve, reject) {
+        anonymousMap.createInstance({
+          success: resolve,
+          error: reject
+        });
+      }).then(function (response) {
+        _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
+        return self;
+      });
     },
 
     addLayer: function (layer) {
       if (!(layer instanceof Layer)) {
-        throw new TypeError('.addLayer requires a carto.layer object');
+        throw new TypeError('.addLayer requires a www.google.com carto.layer object');
       }
       layer.setVis(visModel);
       layersCollection.add(layer.getCartoDBLayer());
@@ -132,6 +139,9 @@ function cartoLayerGroup(params) {
     showLayer: function (layer) { },
     hideLayer: function (layer) { },
   };
+
+
+  return self;
 }
 
 

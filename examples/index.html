@@ -22,7 +22,7 @@
   #map {
     position: relative;
     width: 100vw;
-    height: 100vh;
+    height: 300px;
   }
 </style>
 
@@ -66,26 +66,51 @@
     layers: [smallCitiesLayer]
   });
 
+
   layerGroup.addTo(map)
     .then(() => layerGroup.addLayer(bigCitiesLayer))
     .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 1')))
-    .then(() => layerGroup.removeLayer(smallCitiesLayer))
+    .then(() => layerGroup.removeLayer(bigCitiesLayer))
     .then(() => bigCitiesLayer.setStyle(carto.style.CartoCSS('#layer { marker-fill: #BAFADA; }')))
-    .then(() => layerGroup.addLayer(smallCitiesLayer))
     .then(() => bigCitiesLayer.hide())
     .then(() => bigCitiesLayer.show())
-    .catch(console.error);
+    .catch(console.log);;
 
-  // [x] Add layer to LayerGroup
-  // [x] Remove layer to LayerGroup
-  // [x] Change SQL (source)
-  // [x] Change CartoCSS
-  // [x] Show / hide layer
-  // [ ] API Key
-  //   [ ] Valid API Key
-  //   [ ] Invalid API Key
-  //   [ ] No API Key
-  // [ ] Error handling
+
+
+  // triggers request to Maps API
+  // models are updated:
+  //   - layer models
+  //      - legend models
+  //   - dataview models
+  //   - analysis models
+  //   - layerGroup model
+
+
+  let button = document.createElement('button');
+  button.innerText = 'ADD LAYER';
+  button.onclick = function onBtnClick() {
+    bigCitiesLayer.isVisible() ? bigCitiesLayer.hide() : bigCitiesLayer.show();
+  };
+  document.body.appendChild(button);
+
+  // - [x] Add layer to LayerGroup
+  // - [x] Remove layer to LayerGroup
+  // - [x] Change SQL (source)
+  // - [x] Change CartoCSS
+  // - [x] Show / hide layer
+  // - [ ] API Key
+  //   - [ ] Valid API Key
+  //      - [x] Maps API Request
+  //      - [x] Tiles
+  //      - [ ] Grid.json
+  //   - [ ] Invalid API Key // No error is given from the server, unable to handle it
+  //   - [x] No API Key
+  // - [x] Error handling
+  //   - [x] Wrong params to public API methods (type check) -> throws exception
+  //   - [x] Maps API Errors (request to instantiate map, tile requests, grid.json requests, ...) -> rejects promise
+  //   - [x] Runtime errors -> throws exception
+  // - [ ] Interactivity
 
 </script>
 
