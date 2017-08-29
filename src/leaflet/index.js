@@ -118,7 +118,13 @@ function cartoLayerGroup(params) {
       layersCollection.add(layer.getCartoDBLayer());
       return visModel.reload();
     },
-    removeLayer: function (layer) { },
+    removeLayer: function (layer) {
+      if (!(layer instanceof Layer)) {
+        throw new TypeError('.addLayer requires a carto.layer object');
+      }
+      layersCollection.remove(layer.getCartoDBLayer());
+      return visModel.reload();
+    },
     getLayers: function () { },
     showLayer: function (layer) { },
     hideLayer: function (layer) { },

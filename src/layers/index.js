@@ -10,8 +10,8 @@ function Layer(params) {
     cartocss: params.style,
   }, {
       vis: {
-        on: function () {},
-        reload: function () {}
+        on: function () { },
+        reload: function () { }
       }
     });
 }
@@ -27,10 +27,8 @@ Layer.prototype.setVis = function (visModel) {
 Layer.prototype.setSource = function (source) {
   var self = this;
   // TODO: Check if source is source type
-  return new Promise(function (resolve, reject) {
-    self._cartoLayerModel.set('sql', source);
-    self._visModel.reload();
-  });
+  self._cartoLayerModel.set('sql', source);
+  return self._visModel.reload();
 };
 
 module.exports = {

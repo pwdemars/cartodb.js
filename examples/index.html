@@ -68,17 +68,20 @@
 
   layerGroup.addTo(map)
     .then(() => layerGroup.addLayer(bigCitiesLayer))
-    .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 0')))
+    .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 1')))
+    .then(() => layerGroup.removeLayer(smallCitiesLayer))
     .catch(console.error);
 
-
-
-
-
-  // Add and remove layer to LayerGroup
-  // Change SQL
-  // Change CartoCSS
-  // Show / hide layer
+  // [x] Add layer to LayerGroup
+  // [x] Remove layer to LayerGroup
+  // [x] Change SQL (source)
+  // [ ] Change CartoCSS
+  // [ ] Show / hide layer
+  // [ ] API Key
+  //   [ ] Valid API Key
+  //   [ ] Invalid API Key
+  //   [ ] No API Key
+  // [ ] Error handling
 
 </script>
 
