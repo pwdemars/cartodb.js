@@ -59,15 +59,7 @@ function cartoLayerGroup(params) {
         console.info('map not initialized');
         return Promise.resolve();
       }
-      return new Promise(function (resolve, reject) {
-        anonymousMap.createInstance({
-          success: function (response) {
-            _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
-            resolve();
-          },
-          error: reject
-        });
-      });
+      return _instantiateMap(_view);
     }
   };
 
@@ -109,15 +101,7 @@ function cartoLayerGroup(params) {
 
   var self = {
     addTo: function addTo(leafletMap) {
-      return new Promise(function (resolve, reject) {
-        anonymousMap.createInstance({
-          success: resolve,
-          error: reject
-        });
-      }).then(function (response) {
-        _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
-        return self;
-      });
+      return _instantiateMap(leafletMap);
     },
 
     addLayer: function (layer) {
@@ -140,8 +124,57 @@ function cartoLayerGroup(params) {
     hideLayer: function (layer) { },
   };
 
+  /**
+   * Instantiates a map
+   *   - Load urls from api
+   *   - Set interactivity
+   *   - Add a leaflet layer
+   */
+  function _instantiateMap(leafletMap) {
+    return new Promise(function (resolve, reject) {
+      anonymousMap.createInstance({ success: resolve, error: reject });
+    }).then(function (response) {
+      // If there is already a view reuse it.
+      if (_view) {
+        _view.setUrl(cartoDBLayerGroup.getTileURLTemplate());
+      } else {
+        _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
+      }
+      _enableInteractivity(leafletMap, layersCollection, cartoDBLayerGroup);
+      return self;
+    });
+  }
+
 
   return self;
+}
+
+function _enableInteractivity(leafletMap, layersCollection, cartoDBLayerGroup) {
+  layersCollection.forEach(function (layerModel, layerIndexInLayerGroup) {
+    var tilejson = {
+      tilejson: '2.0.0',
+      scheme: 'xyz',
+      grids: cartoDBLayerGroup.getGridURLTemplatesWithSubdomains(layerIndexInLayerGroup),
+      tiles: cartoDBLayerGroup.getTileURLTemplatesWithSubdomains(),
+      formatter: function (options, data) { return data; }
+    };
+    wax.leaf.interaction().map(leafletMap)
+      .tilejson(tilejson)
+      .on('on', function (event) {
+        if (!event) {
+          return;
+        }
+        var originalEventType = event.e.type;
+        var eventTypeMap = {
+          'click': 'featureClick',
+          'mousemove': 'featureOver'
+        };
+        var eventType = eventTypeMap[originalEventType];
+        layerModel.trigger(eventType, { latlng: { lat: 0, lng: 0 }, data: { name: 'Null Island!' } });
+      })
+      .on('off', function () { });
+
+  });
 }
 
 

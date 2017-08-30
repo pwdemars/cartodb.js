@@ -1,6 +1,9 @@
 var CartoDBLayerModel = require('../geo/map/cartodb-layer.js');
+var _ = require('underscore');
 
 function Layer(params) {
+  var self = this;
+
   /**
    * TODO allow a cartodbLayerModel to be instantiated without vis.
    */
@@ -14,7 +17,13 @@ function Layer(params) {
         reload: function () { }
       }
     });
+
+  this._cartoLayerModel.on('featureClick', function (data) { self.trigger('featureClick', data); });
+  this._cartoLayerModel.on('featureOver', this.trigger, this);
+  this._cartoLayerModel.on('featureOut', this.trigger, this);
 }
+
+_.extend(Layer.prototype, Backbone.Events);
 
 Layer.prototype.getCartoDBLayer = function () {
   return this._cartoLayerModel;
@@ -46,7 +55,7 @@ Layer.prototype.show = function () {
   return this._visModel.repaint();
 };
 
-Layer.prototype.isVisible = function(){
+Layer.prototype.isVisible = function () {
   return this._cartoLayerModel.isVisible();
 };
 

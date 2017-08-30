@@ -70,10 +70,10 @@
   layerGroup.addTo(map)
     .then(() => layerGroup.addLayer(bigCitiesLayer))
     .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 1')))
-    .then(() => layerGroup.removeLayer(bigCitiesLayer))
+    // .then(() => layerGroup.removeLayer(bigCitiesLayer))
     .then(() => bigCitiesLayer.setStyle(carto.style.CartoCSS('#layer { marker-fill: #BAFADA; }')))
-    .then(() => bigCitiesLayer.hide())
-    .then(() => bigCitiesLayer.show())
+    // .then(() => bigCitiesLayer.hide())
+    // .then(() => bigCitiesLayer.show())
     .catch(console.log);;
 
 
@@ -94,6 +94,18 @@
   };
   document.body.appendChild(button);
 
+  var popup = L.popup({});
+
+  smallCitiesLayer.on('featureClick', function (event) {
+    var latLng = L.latLng(event.latlng.lat, event.latlng.lng);
+    popup.setLatLng(latLng);
+    popup.setContent(event.data.name);
+    popup.openOn(map);
+  });
+
+
+  // window.charrango = smallCitiesLayer;
+
   // - [x] Add layer to LayerGroup
   // - [x] Remove layer to LayerGroup
   // - [x] Change SQL (source)
@@ -111,6 +123,12 @@
   //   - [x] Maps API Errors (request to instantiate map, tile requests, grid.json requests, ...) -> rejects promise
   //   - [x] Runtime errors -> throws exception
   // - [ ] Interactivity
+  //   - [x] Enable interactivity when layer is added
+  //   - [ ] Disable interactivity when layer is removed
+  //   - [ ] Disable interactivity when layer is hided
+  //   - [ ] Reload interactivity when vis is reloaded (vis.reload)
+  // - [ ] Dataviews
+
 
 </script>
 
