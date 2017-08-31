@@ -12,6 +12,7 @@ function cartoLayerGroup(params) {
   var anonymousMap;
   var modelUpdater;
   var visModel;
+  var interactions = [];
 
   if (!params.apiKey) {
     throw new Error('API Key is required');
@@ -34,20 +35,6 @@ function cartoLayerGroup(params) {
     // apiKey: params.apiKey,
   });
 
-  var layersCollection = new LayersCollection(params.layers.map(function (layer) { return layer.getCartoDBLayer(); }));
-  var dataviewsCollection = new Backbone.Collection();
-  var analysisCollection = new Backbone.Collection();
-
-  // Responsabilities:
-  //   - "Groups" CartoDBLayers
-  //   - Gets set attrs (by ModelUpdater): urls (tiles, grids, attributes, etc.), index of layers in Maps API
-  //   - Methods to generate tile URLs, grid URLs, etc:
-  var cartoDBLayerGroup = new CartoDBLayerGroup({
-    apiKey: params.apiKey // TODO: Use "authenticator" object instead of attribute
-  }, {
-      layersCollection: layersCollection
-    });
-
   visModel = {
     setOk: function () { },
     setError: function () { },
@@ -62,6 +49,23 @@ function cartoLayerGroup(params) {
       return _instantiateMap(_view);
     }
   };
+
+  var layersCollection = new LayersCollection(params.layers.map(function (layer) {
+    layer.setVis(visModel);
+    return layer.getCartoDBLayer();
+  }));
+  var dataviewsCollection = new Backbone.Collection();
+  var analysisCollection = new Backbone.Collection();
+
+  // Responsabilities:
+  //   - "Groups" CartoDBLayers
+  //   - Gets set attrs (by ModelUpdater): urls (tiles, grids, attributes, etc.), index of layers in Maps API
+  //   - Methods to generate tile URLs, grid URLs, etc:
+  var cartoDBLayerGroup = new CartoDBLayerGroup({
+    apiKey: params.apiKey // TODO: Use "authenticator" object instead of attribute
+  }, {
+      layersCollection: layersCollection
+    });
 
   // Responsabilities:
   //   - .updateModels(wrraper of response from Maps API) -> updates models:
@@ -140,8 +144,62 @@ function cartoLayerGroup(params) {
       } else {
         _view = L.tileLayer(cartoDBLayerGroup.getTileURLTemplate()).addTo(leafletMap);
       }
-      _enableInteractivity(leafletMap, layersCollection, cartoDBLayerGroup);
+      
+      _reloadInteractivity(leafletMap, layersCollection, cartoDBLayerGroup);
       return self;
+    });
+  }
+
+  function _reloadInteractivity(leafletMap, layersCollection, cartoDBLayerGroup) {
+    // Disbale interactivity
+    interactions.forEach(function (interaction) { interaction.remove(); });
+
+    // Enable interactivity
+    interactions = layersCollection.map(function (layerModel, layerIndexInLayerGroup) {
+      var tilejson = {
+        tilejson: '2.0.0',
+        scheme: 'xyz',
+        grids: cartoDBLayerGroup.getGridURLTemplatesWithSubdomains(layerIndexInLayerGroup),
+        tiles: cartoDBLayerGroup.getTileURLTemplatesWithSubdomains(),
+        formatter: function (options, data) { return data; }
+      };
+      return wax.leaf.interaction().map(leafletMap)
+        .tilejson(tilejson)
+        .on('on', function (event) {
+          if (!event) {
+            return;
+          }
+          var originalEventType = event.e.type;
+          var eventTypeMap = {
+            'click': 'featureClick',
+            'mousemove': 'featureOver'
+          };
+          var eventType = eventTypeMap[originalEventType];
+
+          var latlng = leafletMap.layerPointToLatLng(new L.Point(event.e.clientX, event.e.clientY));          
+          if (eventType === 'featureOver') {
+            layerModel.trigger(eventType, {
+              latlng: {
+                lat: latlng.lat,
+                lng: latlng.lng
+              },
+              data: event.data
+            });  
+          } else { // featureClick -> Fetch data from attributes service
+            cartoDBLayerGroup.fetchAttributes(layerIndexInLayerGroup, event.data.cartodb_id, function (data) {
+              if (data) {
+                layerModel.trigger(eventType, {
+                  latlng: {
+                    lat: latlng.lat,
+                    lng: latlng.lng
+                  },
+                  data: data
+                });  
+              }
+            });
+          }
+        })
+        .on('off', function () { });
     });
   }
 
@@ -149,33 +207,7 @@ function cartoLayerGroup(params) {
   return self;
 }
 
-function _enableInteractivity(leafletMap, layersCollection, cartoDBLayerGroup) {
-  layersCollection.forEach(function (layerModel, layerIndexInLayerGroup) {
-    var tilejson = {
-      tilejson: '2.0.0',
-      scheme: 'xyz',
-      grids: cartoDBLayerGroup.getGridURLTemplatesWithSubdomains(layerIndexInLayerGroup),
-      tiles: cartoDBLayerGroup.getTileURLTemplatesWithSubdomains(),
-      formatter: function (options, data) { return data; }
-    };
-    wax.leaf.interaction().map(leafletMap)
-      .tilejson(tilejson)
-      .on('on', function (event) {
-        if (!event) {
-          return;
-        }
-        var originalEventType = event.e.type;
-        var eventTypeMap = {
-          'click': 'featureClick',
-          'mousemove': 'featureOver'
-        };
-        var eventType = eventTypeMap[originalEventType];
-        layerModel.trigger(eventType, { latlng: { lat: 0, lng: 0 }, data: { name: 'Null Island!' } });
-      })
-      .on('off', function () { });
 
-  });
-}
 
 
 module.exports = {

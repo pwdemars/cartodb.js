@@ -53,10 +53,18 @@
   let bigCitiesStyle = carto.style.CartoCSS(`
         #layer {
             marker-fill: #FABADA;
+            marker-width: 20;
         }
   `);
 
-  let smallCitiesLayer = carto.layers.layer({ source: smallCities, style: smallCitiesStyle });
+  let smallCitiesLayer = carto.layers.layer({
+    source: smallCities,
+    style: smallCitiesStyle,
+    interactiveFields: ['name', 'population', 'cartodb_id'] // TODO: Find a nicer way to do this!
+  });
+
+  // smallCitiesLayer.setInteractiveFields(['name']);
+
   let bigCitiesLayer = carto.layers.layer({ source: bigCities, style: bigCitiesStyle });
 
   var layerGroup = carto.leaflet.cartoLayerGroup({
@@ -68,13 +76,13 @@
 
 
   layerGroup.addTo(map)
-    .then(() => layerGroup.addLayer(bigCitiesLayer))
-    .then(() => bigCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population > 1 LIMIT 1')))
+    // .then(() => layerGroup.addLayer(bigCitiesLayer))
+    // .then(() => smallCitiesLayer.setSource(carto.sources.SQL('SELECT * FROM lugares where population <= 1 LIMIT 1')))
     // .then(() => layerGroup.removeLayer(bigCitiesLayer))
-    .then(() => bigCitiesLayer.setStyle(carto.style.CartoCSS('#layer { marker-fill: #BAFADA; }')))
+    // .then(() => bigCitiesLayer.setStyle(carto.style.CartoCSS('#layer { marker-fill: #BAFADA; }')))
     // .then(() => bigCitiesLayer.hide())
     // .then(() => bigCitiesLayer.show())
-    .catch(console.log);;
+    .catch(console.error);
 
 
 
@@ -88,7 +96,7 @@
 
 
   let button = document.createElement('button');
-  button.innerText = 'ADD LAYER';
+  button.innerText = 'ADD LAYaER';
   button.onclick = function onBtnClick() {
     bigCitiesLayer.isVisible() ? bigCitiesLayer.hide() : bigCitiesLayer.show();
   };
@@ -99,7 +107,7 @@
   smallCitiesLayer.on('featureClick', function (event) {
     var latLng = L.latLng(event.latlng.lat, event.latlng.lng);
     popup.setLatLng(latLng);
-    popup.setContent(event.data.name);
+    popup.setContent(event.data.cartodb_id + ': ' + event.data.name);
     popup.openOn(map);
   });
 
@@ -128,7 +136,6 @@
   //   - [ ] Disable interactivity when layer is hided
   //   - [ ] Reload interactivity when vis is reloaded (vis.reload)
   // - [ ] Dataviews
-
 
 </script>
 

@@ -4,6 +4,8 @@ var _ = require('underscore');
 function Layer(params) {
   var self = this;
 
+  var interactiveFields = params.interactiveFields || [];
+  
   /**
    * TODO allow a cartodbLayerModel to be instantiated without vis.
    */
@@ -11,6 +13,12 @@ function Layer(params) {
     // type: 'CartoDB', // this should be extended but is failing! :S
     sql: params.source,
     cartocss: params.style,
+    infowindow: {
+      fields: interactiveFields.map(function (field) { return { name: field }; })
+    },
+    tooltip: {
+      fields: interactiveFields.map(function (field) { return { name: field }; })
+    }
   }, {
       vis: {
         on: function () { },
