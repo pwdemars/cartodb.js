@@ -60,6 +60,7 @@ var TorqueLayer = LayerModelBase.extend({
     this.unset('legends');
 
     LayerModelBase.prototype.initialize.apply(this, arguments);
+    this._resetRangeAndPlay = this._resetRangeAndPlay.bind(this);
   },
 
   _onAttributeChanged: function () {
@@ -104,8 +105,15 @@ var TorqueLayer = LayerModelBase.extend({
 
   _reloadVis: function () {
     this._vis.reload({
-      sourceId: this.get('id')
+      sourceId: this.get('id'),
+      successCallback: this._resetRangeAndPlay()
     });
+  },
+
+  _resetRangeAndPlay: function () {
+    this.resetRenderRange();
+    this.set({ step: 0 });
+    this.play();
   },
 
   play: function () {
