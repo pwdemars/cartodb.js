@@ -106,7 +106,7 @@ var TorqueLayer = LayerModelBase.extend({
   _reloadVis: function () {
     this._vis.reload({
       sourceId: this.get('id'),
-      successCallback: this._resetRangeAndPlay()
+      success: this._resetRangeAndPlay
     });
   },
 
