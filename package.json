@@ -42,7 +42,7 @@
     "perfect-scrollbar": "git://github.com/CartoDB/perfect-scrollbar.git#master",
     "postcss": "5.0.19",
     "tangram.cartodb": "~0.5.6",
-    "torque.js": "CartoDB/torque#master",
+    "torque.js": "CartoDB/torque#289-torque-limits",
     "underscore": "1.8.3"
   },
   "devDependencies": {
